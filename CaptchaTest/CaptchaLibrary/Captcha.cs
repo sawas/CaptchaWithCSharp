@@ -14,6 +14,9 @@ namespace CaptchaLibrary
         private const int MaxOperand = 9;
         private const int MinOperand = 1;
 
+        private const int MinPattern = 0;
+        private const int MaxPattern = 3;
+
         private const int MinusOperator = 3;
         private const int MultiplyOperator = 2;
         private const int PlusOperator = 1;
@@ -27,9 +30,15 @@ namespace CaptchaLibrary
             this.rightOperand = rightOperand;
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}{1}{2}", GetLeftOperand(), GetOperator(), GetRightOperand());
+        }
+
         public string GetLeftOperand()
         {
             ValidateMinMaxOperand(leftOperand);
+
             if (isTextNumberPattern())
             {
                 return leftOperand.ToString();
@@ -63,6 +72,7 @@ namespace CaptchaLibrary
         public string GetRightOperand()
         {
             ValidateMinMaxOperand(rightOperand);
+
             if (isTextNumberPattern())
             {
                 return arrayOperandToString[rightOperand - 1];
@@ -72,12 +82,16 @@ namespace CaptchaLibrary
 
         private bool isTextNumberPattern()
         {
+            ValidateMinMaxPattern();
             return pattern == 2;
         }
 
-        public override string ToString()
+        private void ValidateMinMaxPattern()
         {
-            return string.Format("{0}{1}{2}", GetLeftOperand(), GetOperator(), GetRightOperand());
+            if (pattern <= MinPattern || pattern >= MaxPattern)
+            {
+                throw new InvalidRangeException();
+            }
         }
 
         private static void ValidateMinMaxOperand(int operand)

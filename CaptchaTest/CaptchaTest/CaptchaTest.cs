@@ -101,7 +101,6 @@ namespace CaptchaTest
                 delegate { captcha.GetLeftOperand(); });
         }
 
-
         [Test]
         public void LeftOperand_ShouldThrowException_WhenInputInvalidMaxLeftOperand()
         {
@@ -204,6 +203,39 @@ namespace CaptchaTest
         {
             Captcha captcha = new Captcha(2, 2, 1, 1);
             Assert.AreEqual("2+ONE", captcha.ToString());
+        }
+    }
+
+
+    [TestFixture]
+    public class ShouldThrowExceptionWhenPatternValueIsLessThanOneAndMoreThanTwo
+    {
+        [Test]
+        public void Pattern_ShouldThrowInvalidRangeException_WhenPatternInputIs0()
+        {
+            var captcha = new Captcha(0, 1, 1, 1);
+            Assert.Throws(typeof(InvalidRangeException), delegate { captcha.ToString(); });
+        }
+
+        [Test]
+        public void Pattern_ShouldThrowInvalidRangeException_WhenPatternInputIsLessThan0()
+        {
+            var captcha = new Captcha(-5, 1, 1, 1);
+            Assert.Throws(typeof(InvalidRangeException), delegate { captcha.ToString(); });
+        }
+
+        [Test]
+        public void Pattern_ShouldThrowInvalidRangeException_WhenPatternInputIs3()
+        {
+            var captcha = new Captcha(3, 1, 1, 1);
+            Assert.Throws(typeof(InvalidRangeException), delegate { captcha.ToString(); });
+        }
+
+        [Test]
+        public void Pattern_ShouldThrowInvalidRangeException_WhenPatternInputIsMoreThan2()
+        {
+            var captcha = new Captcha(10, 1, 1, 1);
+            Assert.Throws(typeof(InvalidRangeException), delegate { captcha.ToString(); });
         }
     }
 }
