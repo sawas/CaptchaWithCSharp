@@ -3,19 +3,21 @@ namespace CaptchaLibrary
 {
     public class CaptchaRandomizer : ICaptchaRandomizer
     {
+        private static Random _r = new Random();
+
         public int GetPattern()
         {
-            return new Random().Next(1, 3);
+            return _r.Next(1, 3);
         }
 
         public int GetOperand()
         {
-            return new Random().Next(1, 10);
+            return _r.Next(1, 10);
         }
 
         public int GetOperator()
         {
-            return new Random().Next(1, 4);
+            return _r.Next(1, 4);
         }
     }
 }

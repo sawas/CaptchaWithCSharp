@@ -9,7 +9,11 @@ namespace CaptchaTest
     public class RandomizerTest
     {
         private CaptchaRandomizer _randomizer = null;
-        private static int _iterationTime = 100000;
+        private const int _ITERATIONTIME = 100000;
+
+        private const string _PATTERN = "PATTERN";
+        private const string _OPERAND = "OPERAND";
+        private const string _OPERATOR = "OPERATOR";
 
         [SetUp]
         public void SetUp()
@@ -26,13 +30,13 @@ namespace CaptchaTest
         [Test]
         public void RandomValueOf_GetPattern_Shouldbe1AtLeast40Percent()
         {
-            Assert.AreEqual(true, RandomPatternShouldbeExpectedValueAtLeastPercent(1, _iterationTime, 40));
+            Assert.AreEqual(true, RandomShouldbeExpectedValueAtLeastPercent(_PATTERN, 1, 40));
         }
 
         [Test]
         public void RandomValueOf_GetPattern_Shouldbe2AtLeast40Percent()
         {
-            Assert.AreEqual(true, RandomPatternShouldbeExpectedValueAtLeastPercent(2, _iterationTime, 40));
+            Assert.AreEqual(true, RandomShouldbeExpectedValueAtLeastPercent(_PATTERN, 2, 40));
         }
 
         [Test]
@@ -44,13 +48,13 @@ namespace CaptchaTest
         [Test]
         public void RandomValueOf_GetOperand_Shouldbe1AtLeast9Percent()
         {
-            Assert.AreEqual(true, RandomOperrandShouldbeExpectedValueAtLeastPercent(1, _iterationTime, 9));
+            Assert.AreEqual(true, RandomShouldbeExpectedValueAtLeastPercent(_OPERAND, 1, 9));
         }
 
         [Test]
         public void RandomValueOf_GetOperand_Shouldbe5AtLeast9Percent()
         {
-            Assert.AreEqual(true, RandomOperrandShouldbeExpectedValueAtLeastPercent(5, _iterationTime, 9));
+            Assert.AreEqual(true, RandomShouldbeExpectedValueAtLeastPercent(_OPERAND, 5, 9));
         }
 
         [Test]
@@ -62,64 +66,59 @@ namespace CaptchaTest
         [Test]
         public void RandomValueOf_GetOperator_Shouldbe1AtLeast30Percent()
         {
-            Assert.AreEqual(true, RandomOperatorShouldbeExpectedValueAtLeastPercent(1, _iterationTime, 30));
+            Assert.AreEqual(true, RandomShouldbeExpectedValueAtLeastPercent(_OPERATOR, 1, 30));
         }
 
         [Test]
         public void RandomValueOf_GetOperator_Shouldbe2AtLeast30Percent()
         {
-            Assert.AreEqual(true, RandomOperatorShouldbeExpectedValueAtLeastPercent(2, _iterationTime, 30));
+            Assert.AreEqual(true, RandomShouldbeExpectedValueAtLeastPercent(_OPERATOR, 2, 30));
         }
 
         [Test]
         public void RandomValueOf_GetOperator_Shouldbe3AtLeast30Percent()
         {
-            Assert.AreEqual(true, RandomOperatorShouldbeExpectedValueAtLeastPercent(3, _iterationTime, 30));
+            Assert.AreEqual(true, RandomShouldbeExpectedValueAtLeastPercent(_OPERATOR, 3, 30));
         }
 
-        private bool RandomPatternShouldbeExpectedValueAtLeastPercent(int expectedValue,
-            int iterationTime, int expectedPercent)
+        private bool RandomShouldbeExpectedValueAtLeastPercent(string whatRandom, int expectedValue, int expectedPercent)
         {
             var counter = 0d;
-            for (int i = 0; i < iterationTime; i++)
+            for (int i = 0; i < _ITERATIONTIME; i++)
             {
-                if (_randomizer.GetPattern() == expectedValue)
+                var randomValue = 0;
+                if (whatRandom == _PATTERN)
                 {
-                    counter++;
+                    randomValue = _randomizer.GetPattern();
                 }
+                else if (whatRandom == _OPERAND)
+                {
+                    randomValue = _randomizer.GetOperand();
+
+                }
+                else if (whatRandom == _OPERATOR)
+                {
+                    randomValue = _randomizer.GetOperator();
+                }
+
+                counter = ExpectedValueFoundIncrementor(expectedValue, counter, randomValue);
             }
 
-            return (((counter / iterationTime) * 100) >= expectedPercent);
+            return (ExpectedValueFoundPercentage(_ITERATIONTIME, counter) >= expectedPercent);
         }
 
-        private object RandomOperrandShouldbeExpectedValueAtLeastPercent(int expectedValue,
-            int iterationTime, int expectedPercent)
+        private static double ExpectedValueFoundPercentage(int iterationTime, double counter)
         {
-            var counter = 0d;
-            for (int i = 0; i < iterationTime; i++)
-            {
-                if (_randomizer.GetOperand() == expectedValue)
-                {
-                    counter++;
-                }
-            }
-
-            return (((counter / iterationTime) * 100) >= expectedPercent);
+            return ((counter / iterationTime) * 100);
         }
 
-        private bool RandomOperatorShouldbeExpectedValueAtLeastPercent(int expectedValue,
-            int iterationTime, int expectedPercent)
+        private static double ExpectedValueFoundIncrementor(int expectedValue, double counter, int randomValue)
         {
-            var counter = 0d;
-            for (int i = 0; i < iterationTime; i++)
+            if (randomValue == expectedValue)
             {
-                if (_randomizer.GetOperator() == expectedValue)
-                {
-                    counter++;
-                }
+                counter++;
             }
-
-            return (((counter / iterationTime) * 100) >= expectedPercent);
+            return counter;
         }
     }
 }
